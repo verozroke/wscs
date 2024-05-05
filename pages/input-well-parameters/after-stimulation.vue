@@ -31,11 +31,24 @@
           v-model="inputStore.permeabilityAS"
         ></v-text-field>
         <v-btn
-          @click="inputStore.calculateResultsAfterSimulation"
+          @click="() => {
+        inputStore.calculateResultsAfterSimulation()
+        isCalClicked = true
+      }"
+          v-if="!isCalClicked"
           color="green"
           prepend-icon="mdi-calculator"
         >
           Calculate
+        </v-btn>
+        <v-btn
+          v-if="isCalClicked"
+          @click="router.push('/input-well-parameters/second')"
+          style="margin-left: 10px"
+          color="teal-accent-4"
+          prepend-icon="mdi-arrow-right"
+        >
+          Results
         </v-btn>
       </div>
       <div class="row">
@@ -140,6 +153,8 @@ import { useInputStore } from '~/stores/InputStore'
 
 const router = useRouter()
 const inputStore = useInputStore()
+
+const isCalClicked = ref(false)
 
 </script>
 
