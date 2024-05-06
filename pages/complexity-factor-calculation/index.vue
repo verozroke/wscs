@@ -77,20 +77,33 @@
           label="Casing patch index"
           v-model="inputStore.casingPatchIndex"
         ></v-text-field>
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Wellhead repair index"
+          v-model="inputStore.wellheadRepairIndex"
+        ></v-text-field>
 
       </div>
 
-      <v-btn
-        @click="inputStore.calculateComplexityFactor"
-        color="green"
-        style="width: 200px"
-        prepend-icon="mdi-calculator"
-      >
-        Calculate
-      </v-btn>
-      <v-chip>
-        COF <> ?
-      </v-chip>
+      <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0">
+        <v-btn
+          @click="inputStore.calculateComplexityFactor"
+          color="green"
+          style="width: 200px"
+          prepend-icon="mdi-calculator"
+        >
+          Calculate
+        </v-btn>
+        <v-chip
+          v-if="!(inputStore.COFResults.isCOFValid === null)"
+          color="green"
+          style="width: 100px; display: flex; align-items: center; justify-content: center;"
+        >
+          {{ COFValue }}
+        </v-chip>
+        <h3 v-if="!(inputStore.COFResults.isCOFValid === null)">{{ COFRecommendation }}</h3>
+      </div>
       <div class="actions">
         <v-btn
           prepend-icon="mdi-water-plus"
@@ -115,19 +128,29 @@
   setup
   lang="ts"
 >
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useInputStore } from '~/stores/InputStore'
 
 const router = useRouter()
 const inputStore = useInputStore()
 
-const addNewWell = () => {
+const COFValue = computed(() => inputStore.COFResults.isCOFValid ? 'COF > 50' : 'COF < 50')
 
+const COFRecommendation = computed(() => (
+  inputStore.COFResults.isCOFValid
+    ? 'Further risk-analysis and decision making is recommended.'
+    : 'Coiled tubing is recommended.'
+))
+
+const addNewWell = () => {
+  inputStore.addNewWell()
+  router.push('/')
 }
 
-const goToTechAnal = () => {
 
+const goToTechAnal = () => {
+  inputStore.addNewWell()
+  router.push('/technical-analysis-results')
 }
 
 

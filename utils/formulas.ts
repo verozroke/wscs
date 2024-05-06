@@ -1,6 +1,7 @@
 export type declineCurveTypeOption = 'Exponential' | 'Harmonical' | 'Hyperbolic'
+import { useInputStore } from './../stores/InputStore';
 
-type ResultsAfterSimulationReturnType = {
+export type ResultsAfterSimulationReturnType = {
   qAS: string,
   piIdeal: string,
   piBS: string,
@@ -36,69 +37,242 @@ type SecondResultsParam = {
   b: string
 }
 
-type SecondResultsReturnType = {
+export type SecondResultsReturnType = {
   abondonmentTime: string
   cumulativeProduction: string
 }
 
+type COFResultsParam = {
+  gravelPackLine: string
+  gravelPackIndex: string
+  packerIndex: string
+  workoverDepthIndex: string
+  mandrelIndex: string
+  ageOfLastReentry: string
+  angleOfDeviation: string
+  lostWirelineIndex: string
+  casingPatchIndex: string
+  wellheadRepairIndex: string
+}
+
+export type COFResultsReturnType = {
+  isCOFValid: boolean | null
+  COF: number
+}
+
+type COFFormulaArgs = {
+  a: string
+  g: string
+  p: string
+  d: string
+  m: string
+  r: string
+  v: string
+  t: string
+  c: string
+  w: string
+}
+
+type TechnicalAnalysisResultsParam = {
+  wellName: string
+  permeabilityAS: string
+  damagedK: string
+  skinFactorAS: string
+  skinFactor: string
+  qAS: string
+  q: string
+  flowEfficiencyBS: string
+  flowEfficiencyAS: string
+  dpSkinBS: string
+  pressure: string
+  dpSkinAS: string
+  cumulativeProduction: string
+  abondonmentTime: string
+}
+
+export type TechnicalAnalysisResultsReturnType = {
+  wellName: string
+  undamagedKPercent: string
+  undamagedSPercent: string
+  productionGain: string
+  flowEffeciencyBS: string
+  flowEffeciencyAS: string
+  RfactorBS: string
+  RfactorAS: string
+  cumulativeProduction: string
+  abondonmentTimeMonths: string
+  abondonmentTimeYears: string
+}
+
+type TechnicalAnalysisArgs = {
+  wellName: string
+  permeabilityAS: string
+  damagedK: string
+  skinFactorAS: string
+  skinFactor: string
+  qAS: string
+  q: string
+  flowEfficiencyBS: string
+  flowEfficiencyAS: string
+  PskinBS: string
+  p: string
+  PskinAS: string
+  cumulativeProduction: string
+  abondonmentTime: string
+}
+
+type EconomicDataResultsParam = {
+  queriedWellName: string
+  priceOfOil: string
+  serviceCost: string
+  operationalCost: string
+  costOfChemicals: string
+  initialInvestment: string
+  discountRate: string
+  taxes: string
+  royalty: string
+}
+
+export type EconomicDataResultsReturnType = {
+  totalCost: string
+  totalRevenue: string
+  netCashFlow: string
+  profitabilityIndex: string
+  npv: string
+  paybackPeriod: string
+}
+
 const formulas = {
   getQAS(args: { k: string, h: string, prMinusPwf: string, u: string, Bo: string, re: string, rw: string }): string {
-    const upper = 0.00708 * parseInt(args.k) * parseInt(args.h) * parseInt(args.prMinusPwf)
-    const lower = parseInt(args.u) * parseInt(args.Bo) * Math.log(parseInt(args.re) / parseInt(args.rw))
-    return Math.round(upper / lower).toFixed(2).toString()
+
+    const upper = 0.00708 * parseFloat(args.k) * parseFloat(args.h) * parseFloat(args.prMinusPwf)
+    const lower = parseFloat(args.u) * parseFloat(args.Bo) * Math.log(parseFloat(args.re) / parseFloat(args.rw))
+    return (upper / lower).toString()
   },
   getPiIdeal(args: { k: string, h: string, u: string, Bo: string, re: string, rw: string }): string {
-    const upper = 0.00708 * parseInt(args.k) * parseInt(args.h)
-    const lower = parseInt(args.u) * parseInt(args.Bo) * Math.log(parseInt(args.re) / parseInt(args.rw))
-    return Math.round(upper / lower).toFixed(2).toString()
+    const upper = 0.00708 * parseFloat(args.k) * parseFloat(args.h)
+    const lower = parseFloat(args.u) * parseFloat(args.Bo) * Math.log(parseFloat(args.re) / parseFloat(args.rw))
+    return (upper / lower).toString()
   },
   getPiBS(args: { k: string, h: string, u: string, Bo: string, re: string, rw: string, s: string }): string {
-    const upper = 0.00708 * parseInt(args.k) * parseInt(args.h)
-    const lower = parseInt(args.u) * parseInt(args.Bo) * Math.log(parseInt(args.re) / parseInt(args.rw)) + parseInt(args.s)
-    return Math.round(upper / lower).toFixed(2).toString()
+    const upper = 0.00708 * parseFloat(args.k) * parseFloat(args.h)
+    const lower = parseFloat(args.u) * parseFloat(args.Bo) * Math.log(parseFloat(args.re) / parseFloat(args.rw)) + parseFloat(args.s)
+    return (upper / lower).toString()
   },
   getPiAS(args: { k: string, h: string, u: string, Bo: string, re: string, rw: string, s: string }): string {
-    const upper = 0.00708 * parseInt(args.k) * parseInt(args.h)
-    const lower = parseInt(args.u) * parseInt(args.Bo) * Math.log(parseInt(args.re) / parseInt(args.rw)) + parseInt(args.s)
-    return Math.round(upper / lower).toFixed(2).toString()
+    const upper = 0.00708 * parseFloat(args.k) * parseFloat(args.h)
+    const lower = parseFloat(args.u) * parseFloat(args.Bo) * Math.log(parseFloat(args.re) / parseFloat(args.rw)) + parseFloat(args.s)
+    return (upper / lower).toString()
   },
   getDPSkinBS(args: { k: string, s: string, q: string, mu: string, B: string, h: string }): string {
-    const upper = 141.2 * parseInt(args.q) * parseInt(args.B) * parseInt(args.mu) * parseInt(args.s)
-    const lower = parseInt(args.k) * parseInt(args.h)
-    return Math.round(upper / lower).toFixed(2).toString()
+    const upper = 141.2 * parseFloat(args.q) * parseFloat(args.B) * parseFloat(args.mu) * parseFloat(args.s)
+    const lower = parseFloat(args.k) * parseFloat(args.h)
+    return (upper / lower).toString()
   },
   getFlowEfficiencyBS(args: { PIActual: string, PIIdeal: string }): string {
-    return Math.round(parseInt(args.PIActual) / parseInt(args.PIIdeal)).toFixed(2).toString()
+    return (parseFloat(args.PIActual) / parseFloat(args.PIIdeal)).toString()
   },
   getDPSkinAS(args: { k: string, s: string, q: string, mu: string, B: string, h: string }): string {
-    const upper = 141.2 * parseInt(args.q) * parseInt(args.B) * parseInt(args.mu) * parseInt(args.s)
-    const lower = parseInt(args.k) * parseInt(args.h)
-    return Math.round(upper / lower).toFixed(2).toString()
+    const upper = 141.2 * parseFloat(args.q) * parseFloat(args.B) * parseFloat(args.mu) * parseFloat(args.s)
+    const lower = parseFloat(args.k) * parseFloat(args.h)
+    return (upper / lower).toString()
   },
   getFlowEfficiencyAS(args: { PIActual: string, PIIdeal: string }): string {
-    return Math.round(parseInt(args.PIActual) / parseInt(args.PIIdeal)).toFixed(2).toString()
+    return (parseFloat(args.PIActual) / parseFloat(args.PIIdeal)).toString()
   },
   getAbondonmentTime(args: {
     declineCurveType: declineCurveTypeOption, Di: string, Qa: string, Qi: string
   }): string {
     switch (args.declineCurveType) {
       case 'Hyperbolic':
-        return Math.round((1 / parseInt(args.Di)) * Math.log((parseInt(args.Qi) / parseInt(args.Qa)) - 1)).toFixed(2).toString()
+        return ((1 / parseFloat(args.Di)) * Math.log(Math.abs((parseFloat(args.Qi) / parseFloat(args.Qa)) - 1))).toString()
       case 'Exponential':
-        return Math.round((1 / parseInt(args.Di)) * Math.log(parseInt(args.Qi) / parseInt(args.Qa))).toFixed(2).toString()
+        return ((1 / parseFloat(args.Di)) * Math.log(parseFloat(args.Qi) / parseFloat(args.Qa))).toString()
       case 'Harmonical':
-        return Math.round((1 / parseInt(args.Di)) * Math.log((parseInt(args.Qi) / parseInt(args.Qa)) - 1)).toFixed(2).toString()
+        return ((1 / parseFloat(args.Di)) * Math.log(Math.abs((parseFloat(args.Qi) / parseFloat(args.Qa)) - 1))).toString()
     }
   },
   getCumulativeProduction(args: { declineCurveType: declineCurveTypeOption, Di: string, Qa: string, Qi: string, b: string }): string {
     switch (args.declineCurveType) {
       case 'Hyperbolic':
-        return Math.round(((parseInt(args.Qi) - parseInt(args.Qa)) / parseInt(args.Di)) * ((parseInt(args.Qi) * (1 - parseInt(args.b))) - (parseInt(args.Qa) * (1 - parseInt(args.b))))).toFixed(2).toString()
+        return (((parseFloat(args.Qi) - parseFloat(args.Qa)) / parseFloat(args.Di)) * ((parseFloat(args.Qi) * (1 - parseFloat(args.b))) - (parseFloat(args.Qa) * (1 - parseFloat(args.b))))).toString()
       case 'Exponential':
-        return Math.round((parseInt(args.Qi) - parseInt(args.Qa)) / parseInt(args.Di)).toFixed(2).toString()
+        return ((parseFloat(args.Qi) - parseFloat(args.Qa)) / parseFloat(args.Di)).toString()
       case 'Harmonical':
-        return Math.round((parseInt(args.Qi) / parseInt(args.Di)) * Math.log(parseInt(args.Qi) / parseInt(args.Qa))).toFixed(2).toString()
+        return ((parseFloat(args.Qi) / parseFloat(args.Di)) * Math.log(parseFloat(args.Qi) / parseFloat(args.Qa))).toString()
     }
+  },
+  getCOF(args: COFFormulaArgs): COFResultsReturnType {
+    const {
+      a,
+      g,
+      p,
+      d,
+      m,
+      r,
+      v,
+      t,
+      c,
+      w
+    } = args
+
+    const COF = (
+      (10 * parseFloat(a))
+      + (9 * parseFloat(g))
+      + (8 * parseFloat(p))
+      + (7 * parseFloat(d))
+      + (6 * parseFloat(m))
+      + (5 * parseFloat(r))
+      + (4 * parseFloat(v))
+      + (3 * parseFloat(t))
+      + (2 * parseFloat(c))
+      + (parseFloat(w))
+    )
+
+    return {
+      isCOFValid: COF >= 50,
+      COF,
+    }
+  },
+  getTechnicalAnalysis(args: TechnicalAnalysisArgs): TechnicalAnalysisResultsReturnType {
+    const undamagedKPercent = (((parseFloat(args.permeabilityAS) - parseFloat(args.damagedK)) * 100) / parseFloat(args.damagedK)).toString()
+    const undamagedSPercent = (((parseFloat(args.skinFactorAS) - parseFloat(args.skinFactor)) * 100) / parseFloat(args.skinFactor)).toString()
+    const RfactorAS = (parseFloat(args.PskinBS) / parseFloat(args.p)).toString()
+    const RfactorBS = (parseFloat(args.PskinAS) / parseFloat(args.p)).toString()
+    return {
+      wellName: args.wellName,
+      flowEffeciencyBS: args.flowEfficiencyBS,
+      flowEffeciencyAS: args.flowEfficiencyAS,
+      productionGain: (parseFloat(args.qAS) - parseFloat(args.q)).toString(),
+      cumulativeProduction: args.cumulativeProduction,
+      undamagedKPercent,
+      undamagedSPercent,
+      RfactorAS,
+      RfactorBS,
+      abondonmentTimeMonths: (parseFloat(args.abondonmentTime) / 30).toString(),
+      abondonmentTimeYears: (parseFloat(args.abondonmentTime) / 365).toString()
+    }
+  },
+  getTotalCost(args: { serviceCost: string, operationalCost: string, costOfChemicals: string }): string {
+    return (parseFloat(args.serviceCost) + parseFloat(args.operationalCost) + parseFloat(args.costOfChemicals)).toString()
+  },
+  getTotalRevenue(args: { p: string, q: string, d: string }): string {
+    return (parseFloat(args.p) * parseFloat(args.q) * parseFloat(args.d)).toString()
+  },
+  getProfitabilityIndex(args: { npv: string, initialInvestment: string }): string {
+    return (parseFloat(args.npv) / parseFloat(args.initialInvestment)).toString()
+  },
+  getNPV(args: { netCashFlow: string, i: string, n: string }): string {
+    let sum = 0
+
+    for (let t = 1; t <= parseFloat(args.n); t++) {
+      sum += parseFloat(args.netCashFlow) / Math.pow((1 + parseFloat(args.i)), parseFloat(args.n))
+    }
+
+    return sum.toString()
+  },
+  getPaybackPeriod(args: { initialInvestment: string, netCashFlow: string }): string {
+    return (parseFloat(args.initialInvestment) / parseFloat(args.netCashFlow)).toString()
   }
 }
 
@@ -160,6 +334,7 @@ export function getResultsAfterStimulation({ permeabilityAS, reservoirThickness,
     PIActual: piBS,
     PIIdeal: piIdeal,
   })
+
   const flowEfficiencyAS = formulas.getFlowEfficiencyAS({
     PIActual: piAS,
     PIIdeal: piIdeal,
@@ -179,7 +354,6 @@ export function getResultsAfterStimulation({ permeabilityAS, reservoirThickness,
 }
 
 export function getSecondResults({ abondonmentRate, declineCurveType, declineRate, qAS, b }: SecondResultsParam): SecondResultsReturnType {
-  console.log('hello')
   const abondonmentTime = formulas.getAbondonmentTime({
     declineCurveType,
     Di: declineRate,
@@ -197,4 +371,98 @@ export function getSecondResults({ abondonmentRate, declineCurveType, declineRat
     abondonmentTime,
     cumulativeProduction
   }
+}
+
+export function getCOFResults(args: COFResultsParam): COFResultsReturnType {
+  const COF = formulas.getCOF({
+    a: args.gravelPackLine,
+    g: args.gravelPackIndex,
+    p: args.packerIndex,
+    d: args.workoverDepthIndex,
+    m: args.mandrelIndex,
+    r: args.ageOfLastReentry,
+    v: args.angleOfDeviation,
+    t: args.lostWirelineIndex,
+    c: args.casingPatchIndex,
+    w: args.wellheadRepairIndex,
+  })
+  return COF
+}
+
+export const getTechnicalAnalysisResults = (args: TechnicalAnalysisResultsParam[]): TechnicalAnalysisResultsReturnType[] => args.map(item => {
+  return formulas.getTechnicalAnalysis({
+    wellName: item.wellName,
+    permeabilityAS: item.permeabilityAS,
+    damagedK: item.damagedK,
+    skinFactorAS: item.skinFactorAS,
+    skinFactor: item.skinFactor,
+    qAS: item.qAS,
+    q: item.q,
+    flowEfficiencyBS: item.flowEfficiencyBS,
+    flowEfficiencyAS: item.flowEfficiencyAS,
+    PskinBS: item.dpSkinBS,
+    p: item.pressure,
+    PskinAS: item.dpSkinAS,
+    cumulativeProduction: item.cumulativeProduction,
+    abondonmentTime: item.abondonmentTime,
+  })
+})
+
+export function getEconomicDataResults({ queriedWellName, costOfChemicals, operationalCost, serviceCost, priceOfOil, discountRate, initialInvestment, royalty, taxes }: EconomicDataResultsParam): EconomicDataResultsReturnType {
+  const inputStore = useInputStore()
+
+  const queriedWell = inputStore.wells.find(well => well.wellName === queriedWellName)
+
+  if (!queriedWell) {
+    alert('Well name not found')
+    throw new Error('Well name not found')
+  }
+
+  const totalCost = formulas.getTotalCost({
+    costOfChemicals,
+    operationalCost,
+    serviceCost
+  })
+
+
+  const totalRevenue = formulas.getTotalRevenue({
+    p: priceOfOil,
+    q: queriedWell.results.qAS,
+    d: queriedWell.secondResults.abondonmentTime,
+  })
+
+  const netCashFlow = (parseFloat(totalRevenue) - parseFloat(totalCost)).toString()
+
+  const queriedTechnicalAnalysisResults = queriedWell.technicalAnalysisResults.find(techAnal => techAnal.wellName === queriedWellName)
+
+  if (!queriedTechnicalAnalysisResults) {
+    alert('Well name not found')
+    throw new Error('Well name not found')
+  }
+
+  const npv = formulas.getNPV({
+    netCashFlow,
+    i: discountRate,
+    n: queriedTechnicalAnalysisResults.abondonmentTimeYears,
+  })
+
+  const paybackPeriod = formulas.getPaybackPeriod({
+    initialInvestment,
+    netCashFlow,
+  })
+
+  const profitabilityIndex = formulas.getProfitabilityIndex({
+    npv,
+    initialInvestment,
+  })
+
+  return {
+    totalCost,
+    totalRevenue,
+    netCashFlow,
+    profitabilityIndex,
+    npv,
+    paybackPeriod
+  }
+
 }
