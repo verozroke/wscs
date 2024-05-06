@@ -340,7 +340,6 @@ export function getResultsAfterStimulation({ permeabilityAS, reservoirThickness,
     PIIdeal: piIdeal,
   })
 
-
   return {
     qAS,
     piIdeal,
@@ -408,7 +407,7 @@ export const getTechnicalAnalysisResults = (args: TechnicalAnalysisResultsParam[
   })
 })
 
-export function getEconomicDataResults({ queriedWellName, costOfChemicals, operationalCost, serviceCost, priceOfOil, discountRate, initialInvestment, royalty, taxes }: EconomicDataResultsParam): EconomicDataResultsReturnType {
+export function getEconomicDataResults({ queriedWellName, costOfChemicals, operationalCost, serviceCost, priceOfOil, discountRate, initialInvestment }: EconomicDataResultsParam): EconomicDataResultsReturnType {
   const inputStore = useInputStore()
 
   const queriedWell = inputStore.wells.find(well => well.wellName === queriedWellName)
