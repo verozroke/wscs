@@ -58,8 +58,17 @@
           class="input"
           label="Q A/S"
           suffix="stb/day"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.qAS"
+          readonly
+          v-model="inputStore.results.qAS"
+        ></v-text-field>
+
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Q B/S"
+          suffix="stb/day"
+          readonly
+          v-model="inputStore.results.qBS"
         ></v-text-field>
 
         <v-text-field
@@ -67,8 +76,8 @@
           class="input"
           label="PI Ideal"
           suffix="stb/say/psi"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.piIdeal"
+          readonly
+          v-model="inputStore.results.piIdeal"
         ></v-text-field>
 
         <v-text-field
@@ -76,8 +85,8 @@
           class="input"
           label="PI B/S"
           suffix="stb/day/psi"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.piBS"
+          readonly
+          v-model="inputStore.results.piBS"
         ></v-text-field>
 
         <v-text-field
@@ -85,8 +94,8 @@
           class="input"
           label="PI A/S"
           suffix="stb/day/psi"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.piAS"
+          readonly
+          v-model="inputStore.results.piAS"
         ></v-text-field>
 
         <v-text-field
@@ -94,16 +103,16 @@
           class="input"
           label="dP skin B/S"
           suffix="psi"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.dPSkinBS"
+          readonly
+          v-model="inputStore.results.dPSkinBS"
         ></v-text-field>
 
         <v-text-field
           variant="solo"
           class="input"
           label="Flow Efficiency B/S"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.flowEfficiencyBS"
+          readonly
+          v-model="inputStore.results.flowEfficiencyBS"
         ></v-text-field>
 
         <v-text-field
@@ -111,16 +120,16 @@
           class="input"
           label="dP skin A/S"
           suffix="psi"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.dPSkinAS"
+          readonly
+          v-model="inputStore.results.dPSkinAS"
         ></v-text-field>
 
         <v-text-field
           variant="solo"
           class="input"
           label="Flow Efficiency A/S"
-          @update:model-value="(v) => { }"
-          :value="inputStore.results.flowEfficiencyAS"
+          readonly
+          v-model="inputStore.results.flowEfficiencyAS"
         ></v-text-field>
       </div>
       <div class="actions">

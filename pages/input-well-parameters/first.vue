@@ -9,6 +9,10 @@
           icon="mdi-home"
           @click="router.push('/')"
         ></v-btn>
+        <v-btn
+          prepend-icon="mdi-delete"
+          @click="clear"
+        >Clear All Data</v-btn>
       </template>
       <v-app-bar-title>Input Well Parameters</v-app-bar-title>
     </v-app-bar>
@@ -154,8 +158,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useInputStore } from '~/stores/InputStore'
 
+
 const router = useRouter()
 const inputStore = useInputStore()
+
+const clear = () => {
+  localStorage.clear()
+  window.location.reload()
+}
 
 </script>
 

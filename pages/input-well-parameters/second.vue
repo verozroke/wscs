@@ -111,8 +111,8 @@
           class="input"
           label="Abondonment Time"
           suffix="days"
-          @update:model-value="(v) => { }"
-          :value="inputStore.secondResults.abondonmentTime"
+          readonly
+          v-model="inputStore.secondResults.abondonmentTime"
         ></v-text-field>
 
         <v-text-field
@@ -120,8 +120,8 @@
           class="input"
           label="Cumulative Production"
           suffix="bbl"
-          @update:model-value="(v) => { }"
-          :value="inputStore.secondResults.cumulativeProduction"
+          readonly
+          v-model="inputStore.secondResults.cumulativeProduction"
         ></v-text-field>
 
 

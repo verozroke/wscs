@@ -102,8 +102,8 @@
           class="input"
           label="Total cost"
           suffix="$"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.totalCost"
+          readonly
+          v-model="inputStore.economicDataResults.totalCost"
         ></v-text-field>
 
         <v-text-field
@@ -111,8 +111,8 @@
           class="input"
           label="Total revenue"
           suffix="$"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.totalRevenue"
+          readonly
+          v-model="inputStore.economicDataResults.totalRevenue"
         ></v-text-field>
 
         <v-text-field
@@ -120,30 +120,30 @@
           class="input"
           label="Net Cash Flow"
           suffix="$"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.netCashFlow"
+          readonly
+          v-model="inputStore.economicDataResults.netCashFlow"
         ></v-text-field>
 
         <v-text-field
           variant="solo"
           class="input"
           label="Profitability index"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.profitabilityIndex"
+          readonly
+          v-model="inputStore.economicDataResults.profitabilityIndex"
         ></v-text-field>
         <v-text-field
           variant="solo"
           class="input"
           label="Net present value of future cash flow"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.npv"
+          readonly
+          v-model="inputStore.economicDataResults.npv"
         ></v-text-field>
         <v-text-field
           variant="solo"
           class="input"
           label="Payback Period"
-          @update:model-value="(v) => { }"
-          :value="inputStore.economicDataResults.paybackPeriod"
+          readonly
+          v-model="inputStore.economicDataResults.paybackPeriod"
         ></v-text-field>
 
       </div>

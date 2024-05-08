@@ -94,6 +94,7 @@ export const useInputStore = defineStore('InputStore', () => {
 
   const results = ref({
     qAS: '',
+    qBS: '',
     piIdeal: '',
     piBS: '',
     piAS: '',
@@ -179,7 +180,7 @@ export const useInputStore = defineStore('InputStore', () => {
     skinFactorAS: well.skinFactorAS,
     skinFactor: well.skinFactor,
     qAS: well.results.qAS,
-    q: well.q,
+    qBS: well.results.qBS,
     flowEfficiencyBS: well.results.flowEfficiencyBS,
     flowEfficiencyAS: well.results.flowEfficiencyAS,
     dpSkinBS: well.results.dPSkinBS,
@@ -203,6 +204,10 @@ export const useInputStore = defineStore('InputStore', () => {
   }
 
   const addNewWell = () => {
+    if (!wellName.value) {
+      return
+    }
+
     wells.value.push({
       ...getAfterStimulationValues(),
       ...getCOFValues(),
@@ -221,6 +226,7 @@ export const useInputStore = defineStore('InputStore', () => {
   const clearValuesAndResults = () => {
     results.value = {
       qAS: '',
+      qBS: '',
       piIdeal: '',
       piBS: '',
       piAS: '',
@@ -361,5 +367,7 @@ export const useInputStore = defineStore('InputStore', () => {
     economicDataResults,
   }
 }, {
-  persist: true
+  persist: {
+    storage: localStorage,
+  }
 })

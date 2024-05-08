@@ -74,12 +74,6 @@
               Well
             </th>
             <th class="text-left">
-              % of undamaged k
-            </th>
-            <th class="text-left">
-              % of undamaged S
-            </th>
-            <th class="text-left">
               Production gain, stb/day
             </th>
             <th class="text-left">
@@ -87,12 +81,6 @@
             </th>
             <th class="text-left">
               Flow efficiency A/S
-            </th>
-            <th class="text-left">
-              R-factor B/S
-            </th>
-            <th class="text-left">
-              R-factor A/S
             </th>
             <th class="text-left">
               Cumulative Production, bbl
@@ -111,13 +99,9 @@
             :key="item.wellName"
           >
             <td>{{ item.wellName }}</td>
-            <td>{{ item.undamagedKPercent }} %</td>
-            <td>{{ item.undamagedSPercent }} %</td>
             <td>{{ item.productionGain }}</td>
             <td>{{ item.flowEffeciencyBS }}</td>
             <td>{{ item.flowEffeciencyAS }}</td>
-            <td>{{ item.RfactorBS }}</td>
-            <td>{{ item.RfactorAS }}</td>
             <td>{{ item.cumulativeProduction }}</td>
             <td>{{ item.abondonmentTimeMonths }}</td>
             <td>{{ item.abondonmentTimeYears }}</td>

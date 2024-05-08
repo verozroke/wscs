@@ -14,58 +14,57 @@
     </v-app-bar>
     <main class="body">
       <v-card-title>Ranking of wells by Cumulative Production</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .12)">
+      <v-sheet color="rgba(0, 0, 0, .08)">
         <v-sparkline
           :model-value="cumulativeProductionValues"
-          color="rgba(255, 255, 255, .7)"
+          color="purple-lighten-1"
           height="100"
-          padding="24"
-          stroke-linecap="round"
+          padding="40"
         >
           <template v-slot:label="item">
-            ${{ item.value }}
+            {{ item.value }}
           </template>
         </v-sparkline>
       </v-sheet>
       <v-card-title>Ranking of wells by Production Gain</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .12)">
+      <v-sheet color="rgba(0, 0, 0, .08)">
         <v-sparkline
           :model-value="productionGainValues"
-          color="rgba(255, 255, 255, .7)"
+          color="purple-lighten-1"
           height="100"
-          padding="24"
-          stroke-linecap="round"
+          padding="40"
         >
-          <template v-slot:label="item">
-            ${{ item.value }}
+          <template
+            style="font-size: 16px; margin: 0 20px;"
+            v-slot:label="item"
+          >
+            {{ item.value }}
           </template>
         </v-sparkline>
       </v-sheet>
       <v-card-title>Ranking of wells by R-factor</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .12)">
+      <v-sheet color="rgba(0, 0, 0, .08)">
         <v-sparkline
           :model-value="RfactorBSValues"
-          color="rgba(255, 255, 255, .7)"
+          color="purple-lighten-1"
           height="100"
-          padding="24"
-          stroke-linecap="round"
+          padding="40"
         >
           <template v-slot:label="item">
-            ${{ item.value }}
+            {{ item.value }}
           </template>
         </v-sparkline>
       </v-sheet>
       <v-card-title>Ranking of wells by Time of Abandonment</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .12)">
+      <v-sheet color="rgba(0, 0, 0, .08)">
         <v-sparkline
           :model-value="abondonmentTimeYearsValues"
-          color="rgba(255, 255, 255, .7)"
+          color="purple-lighten-1"
           height="100"
-          padding="24"
-          stroke-linecap="round"
+          padding="40"
         >
           <template v-slot:label="item">
-            ${{ item.value }}
+            {{ item.value }}
           </template>
         </v-sparkline>
       </v-sheet>
@@ -107,19 +106,16 @@ const cumulativeProductionValues = computed(() => (
 
 const productionGainValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .sort((a, b) => parseFloat(a.productionGain) + parseFloat(b.productionGain))
     .map(item => parseFloat(item.productionGain))
 ))
 
 const RfactorBSValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .sort((a, b) => parseFloat(a.RfactorBS) + parseFloat(b.RfactorBS))
     .map(item => parseFloat(item.RfactorBS))
 ))
 
 const abondonmentTimeYearsValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .sort((a, b) => parseFloat(a.abondonmentTimeYears) + parseFloat(b.abondonmentTimeYears))
     .map(item => parseFloat(item.abondonmentTimeYears))
 ))
 </script>

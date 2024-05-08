@@ -106,6 +106,13 @@
       </div>
       <div class="actions">
         <v-btn
+          prepend-icon="mdi-arrow-left"
+          color="purple-lighten-1"
+          @click="router.push('/input-well-parameters/second')"
+        >
+          Back
+        </v-btn>
+        <v-btn
           prepend-icon="mdi-water-plus"
           color="purple-lighten-1"
           @click="addNewWell"
@@ -144,7 +151,7 @@ const COFRecommendation = computed(() => (
 
 const addNewWell = () => {
   inputStore.addNewWell()
-  router.push('/')
+  router.push('/input-well-parameters/first')
 }
 
 
