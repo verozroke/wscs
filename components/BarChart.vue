@@ -1,37 +1,67 @@
 <template>
   <Bar
     id="my-chart-id"
-    :options="chartOptions"
+    :options="{ ...chartOptions }"
     :data="chartData"
-    type="line"
+    type="scatter"
   />
 </template>
 
-<script>
+<script
+  lang="ts"
+  setup
+>
 import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js'
+import { Chart as ChartJS, Title, Tooltip, Legend, LinearScale, PointElement, LineElement, LineController, ScatterController } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement)
+ChartJS.register(Title, Tooltip, Legend, LinearScale, PointElement, LineElement, LineController, ScatterController)
 
-export default {
-  name: 'BarChart',
-  components: { Bar },
-  data() {
-    return {
-      chartData: {
-        labels: ['January', 'February', 'March'],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [65, 59, 80],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }]
-      },
-      chartOptions: {
-        responsive: true,
+type DataProp = {
+  wellName: string
+  data: number
+}
+
+const props = defineProps<{
+  data: DataProp[]
+  label: string
+}>()
+
+
+const chartData = ref({
+  labels: props.data.map((item) => item.wellName),
+  datasets: [{
+    label: props.label,
+    data: props.data.map((item, index) => ({ y: index + 1, x: parseInt(item.data.toFixed(0)), label: item.wellName })),
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+    borderWidth: 4
+  }]
+})
+const chartOptions = ref({
+  responsive: true,
+  showLine: true,
+  plugins: {
+    tooltip: {
+      callbacks: {
+        label: (ctx: any) => {
+          return `Well Name:  ${ctx.raw.label}
+                    \n x: ${ctx.raw.x}, y: ${ctx.raw.y}`
+        }
       }
     }
+  },
+  scales: {
+    y: {
+      reverse: true,
+      ticks: {
+        maxTicksLimit: props.data.length + 1
+      }
+    },
+    x: {
+      beginAtZero: true,
+      min: 0,
+      max: parseInt(props.data[props.data.length - 1].data.toFixed(0)) + 1,
+    }
   }
-}
+})
 </script>

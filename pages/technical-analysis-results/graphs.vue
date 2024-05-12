@@ -13,61 +13,21 @@
       <v-app-bar-title>Technical Analysis Results</v-app-bar-title>
     </v-app-bar>
     <main class="body">
-      <v-card-title>Ranking of wells by Cumulative Production</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .08)">
-        <v-sparkline
-          :model-value="cumulativeProductionValues"
-          color="purple-lighten-1"
-          height="100"
-          padding="40"
-        >
-          <template v-slot:label="item">
-            {{ item.value }}
-          </template>
-        </v-sparkline>
-      </v-sheet>
-      <v-card-title>Ranking of wells by Production Gain</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .08)">
-        <v-sparkline
-          :model-value="productionGainValues"
-          color="purple-lighten-1"
-          height="100"
-          padding="40"
-        >
-          <template
-            style="font-size: 16px; margin: 0 20px;"
-            v-slot:label="item"
-          >
-            {{ item.value }}
-          </template>
-        </v-sparkline>
-      </v-sheet>
-      <v-card-title>Ranking of wells by R-factor</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .08)">
-        <v-sparkline
-          :model-value="RfactorBSValues"
-          color="purple-lighten-1"
-          height="100"
-          padding="40"
-        >
-          <template v-slot:label="item">
-            {{ item.value }}
-          </template>
-        </v-sparkline>
-      </v-sheet>
-      <v-card-title>Ranking of wells by Time of Abandonment</v-card-title>
-      <v-sheet color="rgba(0, 0, 0, .08)">
-        <v-sparkline
-          :model-value="abondonmentTimeYearsValues"
-          color="purple-lighten-1"
-          height="100"
-          padding="40"
-        >
-          <template v-slot:label="item">
-            {{ item.value }}
-          </template>
-        </v-sparkline>
-      </v-sheet>
+      <!-- <v-card-title>Ranking of wells by Cumulative Production</v-card-title> -->
+      <BarChart
+        :data="cumulativeProductionValues.sort((a, b) => a.data - b.data)"
+        label="Ranking of wells by Cumulative Production"
+      />
+      <!-- <v-card-title></v-card-title> -->
+      <BarChart
+        :data="productionGainValues.sort((a, b) => a.data - b.data)"
+        label="Ranking of wells by Production Gain"
+      />
+      <!-- <v-card-title></v-card-title> -->
+      <BarChart
+        :data="abondonmentTimeYearsValues.sort((a, b) => a.data - b.data)"
+        label="Ranking of wells by Time of Abandonment"
+      />
       <div class="actions">
         <v-btn
           prepend-icon="mdi-arrow-left"
@@ -100,23 +60,19 @@ const inputStore = useInputStore()
 
 const cumulativeProductionValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .sort((a, b) => parseFloat(a.cumulativeProduction) + parseFloat(b.cumulativeProduction))
-    .map(item => parseFloat(item.cumulativeProduction))
+    .map(item => ({ wellName: item.wellName, data: parseFloat(item.cumulativeProduction) }))
 ))
 
 const productionGainValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .map(item => parseFloat(item.productionGain))
+    .map(item => ({ wellName: item.wellName, data: parseFloat(item.productionGain) }))
 ))
 
-const RfactorBSValues = computed(() => (
-  inputStore.technicalAnalysisResults
-    .map(item => parseFloat(item.RfactorBS))
-))
+
 
 const abondonmentTimeYearsValues = computed(() => (
   inputStore.technicalAnalysisResults
-    .map(item => parseFloat(item.abondonmentTimeYears))
+    .map(item => ({ wellName: item.wellName, data: parseFloat(item.abondonmentTimeYears) }))
 ))
 </script>
 

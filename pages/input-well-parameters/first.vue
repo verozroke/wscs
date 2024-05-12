@@ -17,7 +17,6 @@
       <v-app-bar-title>Input Well Parameters</v-app-bar-title>
     </v-app-bar>
     <main class="body">
-      <BarChart />
       <div class="row">
         <v-text-field
           variant="solo"
