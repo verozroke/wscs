@@ -56,14 +56,20 @@
           v-model="inputStore.costOfChemicals"
         ></v-text-field>
 
-        <v-text-field
+        <!-- <v-text-field
           variant="solo"
           class="input"
           label="Initial investment"
           suffix="$"
           v-model="inputStore.initialInvestment"
+        ></v-text-field> -->
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Duration of well stimulation job"
+          suffix="days"
+          v-model="inputStore.durationOfWSJ"
         ></v-text-field>
-
         <v-text-field
           variant="solo"
           class="input"
@@ -87,9 +93,17 @@
           suffix="%"
           v-model="inputStore.royalty"
         ></v-text-field>
+
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Deprecation"
+          suffix="%"
+          v-model="inputStore.deprecation"
+        ></v-text-field>
       </div>
       <v-btn
-        @click="inputStore.calculateResultsAfterSimulation"
+        @click="inputStore.calculateEconomicDataResults"
         color="green"
         style="width: 200px;"
         prepend-icon="mdi-calculator"
@@ -118,19 +132,47 @@
         <v-text-field
           variant="solo"
           class="input"
+          label="EBIT"
+          suffix="$"
+          readonly
+          v-model="inputStore.economicDataResults.EBIT"
+        ></v-text-field>
+
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Taxable Income"
+          suffix="$"
+          readonly
+          v-model="inputStore.economicDataResults.taxableIncome"
+        ></v-text-field>
+
+        <v-text-field
+          variant="solo"
+          class="input"
+          label="Net Income"
+          suffix="$"
+          readonly
+          v-model="inputStore.economicDataResults.netIncome"
+        ></v-text-field>
+
+        <v-text-field
+          variant="solo"
+          class="input"
           label="Net Cash Flow"
           suffix="$"
           readonly
           v-model="inputStore.economicDataResults.netCashFlow"
         ></v-text-field>
 
-        <v-text-field
+        <!-- <v-text-field
           variant="solo"
           class="input"
           label="Profitability index"
           readonly
           v-model="inputStore.economicDataResults.profitabilityIndex"
-        ></v-text-field>
+        ></v-text-field> -->
+
         <v-text-field
           variant="solo"
           class="input"

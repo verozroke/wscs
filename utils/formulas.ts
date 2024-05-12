@@ -128,17 +128,22 @@ type EconomicDataResultsParam = {
   serviceCost: string
   operationalCost: string
   costOfChemicals: string
+  durationOfWSJ: string
+  deprecation: string
   initialInvestment: string
   discountRate: string
   taxes: string
   royalty: string
+
 }
 
 export type EconomicDataResultsReturnType = {
   totalCost: string
   totalRevenue: string
+  EBIT: string
+  taxableIncome: string
+  netIncome: string
   netCashFlow: string
-  profitabilityIndex: string
   npv: string
   paybackPeriod: string
 }
@@ -258,27 +263,43 @@ const formulas = {
       abondonmentTimeYears: (parseFloat(args.abondonmentTime) / 365).toFixed(4).toString()
     }
   },
-  getTotalCost(args: { serviceCost: string, operationalCost: string, costOfChemicals: string }): string {
-    return (parseFloat(args.serviceCost) + parseFloat(args.operationalCost) + parseFloat(args.costOfChemicals)).toFixed(4).toString()
+  getTotalCost(args: { serviceCost: string, operationalCost: string, costOfChemicals: string, durationOfWSJ: string }): string {
+    return (parseFloat(args.serviceCost) + parseFloat(args.operationalCost) + (parseFloat(args.costOfChemicals) * parseFloat(args.durationOfWSJ))).toFixed(4).toString()
   },
-  getTotalRevenue(args: { p: string, q: string, d: string }): string {
-    return (parseFloat(args.p) * parseFloat(args.q) * parseFloat(args.d)).toFixed(4).toString()
+  getTotalRevenue(args: { p: string, pg: string, ad: string }): string {
+    return (parseFloat(args.p) * parseFloat(args.pg) * parseFloat(args.ad)).toFixed(4).toString()
   },
-  getProfitabilityIndex(args: { npv: string, initialInvestment: string }): string {
-    return (parseFloat(args.npv) / parseFloat(args.initialInvestment)).toFixed(4).toString()
+  getEBIT(args: {
+    totalRevenue: string
+    totalCost: string
+    deprecation: string
+  }) {
+    return (parseFloat(args.totalRevenue) - parseFloat(args.totalCost) - parseFloat(args.deprecation)).toFixed(4).toString()
   },
-  getNPV(args: { netCashFlow: string, i: string, n: string }): string {
+  getNPV(args: { netCashFlow: string, i: string, n: string, abandonmentTime: string }): string {
     let sum = 0
 
     for (let t = 1; t <= parseFloat(args.n); t++) {
-      sum += parseFloat(args.netCashFlow) / Math.pow((1 + parseFloat(args.i)), parseFloat(args.n))
+      sum += (parseFloat(args.netCashFlow) / parseFloat(args.abandonmentTime)) / Math.pow((1 + parseFloat(args.i)), parseFloat(args.n))
     }
 
     return sum.toFixed(4).toString()
   },
-  getPaybackPeriod(args: { initialInvestment: string, netCashFlow: string }): string {
-    return (parseFloat(args.initialInvestment) / parseFloat(args.netCashFlow)).toFixed(4).toString()
-  }
+  getPaybackPeriod(args: { totalCost: string, cashFlow: string }): string {
+    return ((parseFloat(args.totalCost) / parseFloat(args.cashFlow)) * 12 * 30).toFixed(4).toString()
+  },
+  getTaxableIncome(args: {
+    EBIT: string
+    royalty: string
+  }) {
+    return (parseFloat(args.EBIT) - parseFloat(args.royalty)).toFixed(4).toString()
+  },
+  getNetIncome(args: {
+    taxableIncome: string
+    taxes: string
+  }) {
+    return (parseFloat(args.taxableIncome) - parseFloat(args.taxes)).toFixed(4).toString()
+  },
 }
 
 export function getResultsAfterStimulation({ permeabilityAS, reservoirThickness, pressure, viscosity, fvf, reservoirRadius, wellboreRadius, skinFactor, skinFactorAS, permeability, damagedK, q }: ResultsAfterSimulationParam): ResultsAfterSimulationReturnType {
@@ -424,7 +445,7 @@ export const getTechnicalAnalysisResults = (args: TechnicalAnalysisResultsParam[
   })
 })
 
-export function getEconomicDataResults({ queriedWellName, costOfChemicals, operationalCost, serviceCost, priceOfOil, discountRate, initialInvestment }: EconomicDataResultsParam): EconomicDataResultsReturnType {
+export function getEconomicDataResults({ queriedWellName, costOfChemicals, operationalCost, serviceCost, priceOfOil, royalty, taxes, discountRate, initialInvestment, deprecation, durationOfWSJ }: EconomicDataResultsParam): EconomicDataResultsReturnType {
   const inputStore = useInputStore()
 
   const queriedWell = inputStore.wells.find(well => well.wellName === queriedWellName)
@@ -436,47 +457,61 @@ export function getEconomicDataResults({ queriedWellName, costOfChemicals, opera
 
   const totalCost = formulas.getTotalCost({
     costOfChemicals,
+    serviceCost,
     operationalCost,
-    serviceCost
+    durationOfWSJ,
   })
 
-
-  const totalRevenue = formulas.getTotalRevenue({
-    p: priceOfOil,
-    q: queriedWell.results.qAS,
-    d: queriedWell.secondResults.abondonmentTime,
-  })
-
-  const netCashFlow = (parseFloat(totalRevenue) - parseFloat(totalCost)).toFixed(4).toString()
-
-  const queriedTechnicalAnalysisResults = queriedWell.technicalAnalysisResults.find(techAnal => techAnal.wellName === queriedWellName)
+  const queriedTechnicalAnalysisResults = inputStore.technicalAnalysisResults.find(techAnal => techAnal.wellName === queriedWellName)
 
   if (!queriedTechnicalAnalysisResults) {
     alert('Well name not found')
     throw new Error('Well name not found')
   }
 
+  const totalRevenue = formulas.getTotalRevenue({
+    p: priceOfOil,
+    pg: queriedTechnicalAnalysisResults.productionGain,
+    ad: queriedWell.secondResults.abondonmentTime,
+  })
+
+  const EBIT = formulas.getEBIT({
+    totalRevenue,
+    totalCost,
+    deprecation
+  })
+
+  const taxableIncome = formulas.getTaxableIncome({
+    EBIT,
+    royalty
+  })
+
+  const netIncome = formulas.getNetIncome({
+    taxableIncome,
+    taxes,
+  })
+
+  const netCashFlow = (parseFloat(totalRevenue) - parseFloat(totalCost)).toFixed(4).toString()
+
   const npv = formulas.getNPV({
     netCashFlow,
     i: discountRate,
     n: queriedTechnicalAnalysisResults.abondonmentTimeYears,
+    abandonmentTime: queriedWell.secondResults.abondonmentTime
   })
 
   const paybackPeriod = formulas.getPaybackPeriod({
-    initialInvestment,
-    netCashFlow,
-  })
-
-  const profitabilityIndex = formulas.getProfitabilityIndex({
-    npv,
-    initialInvestment,
+    totalCost,
+    cashFlow: (parseFloat(netCashFlow) / parseFloat(queriedWell.secondResults.abondonmentTime)).toFixed(4).toString(),
   })
 
   return {
     totalCost,
     totalRevenue,
     netCashFlow,
-    profitabilityIndex,
+    taxableIncome,
+    netIncome,
+    EBIT,
     npv,
     paybackPeriod
   }

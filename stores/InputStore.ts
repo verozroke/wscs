@@ -82,6 +82,8 @@ export const useInputStore = defineStore('InputStore', () => {
 
   const priceOfOil = ref('')
   const serviceCost = ref('')
+  const durationOfWSJ = ref('')
+  const deprecation = ref('')
   const operationalCost = ref('')
   const costOfChemicals = ref('')
   const initialInvestment = ref('')
@@ -124,10 +126,12 @@ export const useInputStore = defineStore('InputStore', () => {
   const economicDataResults = ref({
     totalCost: '',
     totalRevenue: '',
+    EBIT: '',
+    taxableIncome: '',
+    netIncome: '',
     netCashFlow: '',
-    profitabilityIndex: '',
     npv: '',
-    paybackPeriod: ''
+    paybackPeriod: '',
   })
 
   const getAfterStimulationValues = () => {
@@ -196,6 +200,8 @@ export const useInputStore = defineStore('InputStore', () => {
       serviceCost: serviceCost.value,
       operationalCost: operationalCost.value,
       costOfChemicals: costOfChemicals.value,
+      deprecation: deprecation.value,
+      durationOfWSJ: durationOfWSJ.value,
       initialInvestment: initialInvestment.value,
       discountRate: discountRate.value,
       taxes: taxes.value,
@@ -249,10 +255,12 @@ export const useInputStore = defineStore('InputStore', () => {
     economicDataResults.value = {
       totalCost: '',
       totalRevenue: '',
+      EBIT: '',
+      taxableIncome: '',
+      netIncome: '',
       netCashFlow: '',
-      profitabilityIndex: '',
       npv: '',
-      paybackPeriod: ''
+      paybackPeriod: '',
     }
 
     wellName.value = ''
@@ -355,7 +363,8 @@ export const useInputStore = defineStore('InputStore', () => {
     taxes,
     royalty,
     queriedWellName,
-
+    deprecation,
+    durationOfWSJ,
     calculateResultsAfterSimulation,
     calculateSecondResultsResults,
     calculateComplexityFactor,

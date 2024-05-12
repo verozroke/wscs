@@ -24,6 +24,7 @@ type DataProp = {
 const props = defineProps<{
   data: DataProp[]
   label: string
+  xAxisTitle: string
 }>()
 
 
@@ -55,12 +56,20 @@ const chartOptions = ref({
       reverse: true,
       ticks: {
         maxTicksLimit: props.data.length + 1
+      },
+      title: {
+        display: true,
+        text: 'Well Rank, №'
       }
     },
     x: {
       beginAtZero: true,
       min: 0,
       max: parseInt(props.data[props.data.length - 1].data.toFixed(0)) + 1,
+      title: {
+        display: true,
+        text: props.xAxisTitle
+      }
     }
   }
 })
