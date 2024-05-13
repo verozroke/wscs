@@ -197,6 +197,13 @@
         >
           Back
         </v-btn>
+        <v-btn
+          append-icon="mdi-arrow-right"
+          color="purple-lighten-1"
+          @click="router.push('/input-economic-data/graphs')"
+        >
+          Next
+        </v-btn>
       </div>
     </main>
   </div>
@@ -221,7 +228,7 @@ const inputStore = useInputStore()
 >
 .body {
   padding: 100px 45px;
-  background-color: #FFF8E1;
+  background-color: rgb(248 250 252);
   width: 100vw;
   height: 100vh;
   display: flex;

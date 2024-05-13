@@ -173,7 +173,7 @@ const isCalClicked = ref(false)
 >
 .body {
   padding: 100px 45px;
-  background-color: #FFF8E1;
+  background-color: rgb(248 250 252);
   width: 100vw;
   height: 100vh;
   display: flex;

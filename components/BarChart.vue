@@ -55,7 +55,7 @@ const chartOptions = ref({
     y: {
       reverse: true,
       ticks: {
-        maxTicksLimit: props.data.length + 1
+        maxTicksLimit: props.data.length + 1.
       },
       title: {
         display: true,
@@ -65,7 +65,10 @@ const chartOptions = ref({
     x: {
       beginAtZero: true,
       min: 0,
-      max: parseInt(props.data[props.data.length - 1].data.toFixed(0)) + 1,
+      max: (() => {
+        console.log(parseInt(props.data[0].data.toFixed(0)) + 1)
+        return parseInt(props.data[0].data.toFixed(0)) + 1
+      })(),
       title: {
         display: true,
         text: props.xAxisTitle

@@ -46,6 +46,18 @@ type Well = {
   technicalAnalysisResults: TechnicalAnalysisResultsReturnType[]
 }
 
+type EconomicDataResultsItem = {
+  wellName: string
+  totalCost: string
+  totalRevenue: string
+  EBIT: string
+  taxableIncome: string
+  netIncome: string
+  netCashFlow: string
+  npv: string
+  paybackPeriod: string
+}
+
 export const useInputStore = defineStore('InputStore', () => {
   const router = useRouter()
 
@@ -93,6 +105,8 @@ export const useInputStore = defineStore('InputStore', () => {
   const queriedWellName = ref('')
 
   const wells = ref<Well[]>([])
+
+  const economicDataResultsGraphs = ref<EconomicDataResultsItem[]>([])
 
   const results = ref({
     qAS: '',
@@ -319,6 +333,21 @@ export const useInputStore = defineStore('InputStore', () => {
 
   const calculateEconomicDataResults = () => {
     economicDataResults.value = getEconomicDataResults({ ...getEconomicDataValues(), queriedWellName: queriedWellName.value })
+
+    const queriedResultIndex = economicDataResultsGraphs.value.findIndex(item => item.wellName === queriedWellName.value)
+
+    if (queriedResultIndex === -1) {
+      economicDataResultsGraphs.value.push({
+        ...economicDataResults.value,
+        wellName: queriedWellName.value
+      })
+    } else {
+      economicDataResultsGraphs.value[queriedResultIndex] = {
+        ...economicDataResults.value,
+        wellName: queriedWellName.value
+      }
+    }
+
   }
 
   return {
@@ -374,6 +403,7 @@ export const useInputStore = defineStore('InputStore', () => {
     calculateTechnicalAnalysisResults,
     calculateEconomicDataResults,
     economicDataResults,
+    economicDataResultsGraphs,
   }
 }, {
   persist: {

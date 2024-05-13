@@ -13,21 +13,18 @@
       <v-app-bar-title>Technical Analysis Results</v-app-bar-title>
     </v-app-bar>
     <main class="body">
-      <!-- <v-card-title>Ranking of wells by Cumulative Production</v-card-title> -->
       <BarChart
-        :data="cumulativeProductionValues.sort((a, b) => a.data - b.data)"
+        :data="cumulativeProductionValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Cumulative Production"
         x-axis-title="Cumulative Production, bbl/day"
       />
-      <!-- <v-card-title></v-card-title> -->
       <BarChart
-        :data="productionGainValues.sort((a, b) => a.data - b.data)"
+        :data="productionGainValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Production Gain"
         x-axis-title="Production Gain"
       />
-      <!-- <v-card-title></v-card-title> -->
       <BarChart
-        :data="abondonmentTimeYearsValues.sort((a, b) => a.data - b.data)"
+        :data="abondonmentTimeYearsValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Time of Abandonment"
         x-axis-title="Time of Abandonment, year"
       />
@@ -85,7 +82,7 @@ const abondonmentTimeYearsValues = computed(() => (
 >
 .body {
   padding: 100px 45px;
-  background-color: #FFF8E1;
+  background-color: rgb(248 250 252);
   width: 100vw;
   height: 100vh;
   display: flex;
