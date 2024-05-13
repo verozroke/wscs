@@ -264,7 +264,7 @@ const formulas = {
     }
   },
   getTotalCost(args: { serviceCost: string, operationalCost: string, costOfChemicals: string, durationOfWSJ: string }): string {
-    return (parseFloat(args.serviceCost) + parseFloat(args.operationalCost) + (parseFloat(args.costOfChemicals) * parseFloat(args.durationOfWSJ))).toFixed(4).toString()
+    return (parseFloat(args.serviceCost) + parseFloat(args.costOfChemicals) + (parseFloat(args.operationalCost) * parseFloat(args.durationOfWSJ))).toFixed(4).toString()
   },
   getTotalRevenue(args: { p: string, pg: string, ad: string }): string {
     return (parseFloat(args.p) * parseFloat(args.pg) * parseFloat(args.ad)).toFixed(4).toString()
@@ -286,7 +286,7 @@ const formulas = {
     return sum.toFixed(4).toString()
   },
   getPaybackPeriod(args: { totalCost: string, cashFlow: string }): string {
-    return ((parseFloat(args.totalCost) / parseFloat(args.cashFlow)) * 12 * 30).toFixed(4).toString()
+    return ((parseFloat(args.totalCost) / parseFloat(args.cashFlow)) * 360).toFixed(4).toString()
   },
   getTaxableIncome(args: {
     EBIT: string
