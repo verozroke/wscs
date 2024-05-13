@@ -135,11 +135,18 @@
           Back
         </v-btn>
         <v-btn
-          append-icon="mdi-arrow-right"
+          prepend-icon="mdi-water-plus"
           color="purple-lighten-1"
-          @click="router.push('/complexity-factor-calculation')"
+          @click="addNewWell"
         >
-          Next
+          Add ned well
+        </v-btn>
+        <v-btn
+          append-icon="mdi-google-analytics"
+          color="purple-lighten-1"
+          @click="goToTechAnal"
+        >
+          Techinal Analysis
         </v-btn>
       </div>
     </main>
@@ -161,6 +168,20 @@ const isCalClicked = ref(false)
 const dialog = ref(false)
 
 const checkForHyberbolic = () => inputStore.declineCurveType === 'Hyperbolic'
+
+
+const addNewWell = () => {
+  inputStore.addNewWell()
+  router.push('/input-well-parameters/first')
+}
+
+
+const goToTechAnal = () => {
+  inputStore.addNewWell()
+  router.push('/technical-analysis-results')
+}
+
+
 
 </script>
 

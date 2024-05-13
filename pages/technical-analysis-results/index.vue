@@ -13,7 +13,7 @@
       <v-app-bar-title>Technical Analysis Results</v-app-bar-title>
     </v-app-bar>
     <main class="body">
-      <v-card-title>Workover complexity analysis</v-card-title>
+      <!-- <v-card-title>Workover complexity analysis</v-card-title>
       <div style="display: flex; gap: 20px">
         <div>
           <v-card-subtitle style="font-size: 24px;">Wells with Easy workover</v-card-subtitle>
@@ -64,7 +64,7 @@
           </v-table>
 
         </div>
-      </div>
+      </div> -->
       <v-card-title>Analysis Results</v-card-title>
       <!-- second table -->
       <v-table>

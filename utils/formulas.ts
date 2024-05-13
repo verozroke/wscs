@@ -267,7 +267,7 @@ const formulas = {
     return (parseFloat(args.serviceCost) + parseFloat(args.costOfChemicals) + (parseFloat(args.operationalCost) * parseFloat(args.durationOfWSJ))).toFixed(4).toString()
   },
   getTotalRevenue(args: { p: string, pg: string, ad: string }): string {
-    return (parseFloat(args.p) * parseFloat(args.pg) * parseFloat(args.ad)).toFixed(4).toString()
+    return (parseFloat(args.p) * parseFloat(args.ad) * parseFloat(args.pg)).toFixed(4).toString()
   },
   getEBIT(args: {
     totalRevenue: string
@@ -504,6 +504,7 @@ export function getEconomicDataResults({ queriedWellName, costOfChemicals, opera
     totalCost,
     cashFlow: (parseFloat(netCashFlow) / parseFloat(queriedWell.secondResults.abondonmentTime)).toFixed(4).toString(),
   })
+
 
   return {
     totalCost,

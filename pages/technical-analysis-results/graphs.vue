@@ -16,17 +16,17 @@
       <BarChart
         :data="cumulativeProductionValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Cumulative Production"
-        x-axis-title="Cumulative Production, bbl/day"
+        x-axis-title="Cumulative Production, bbl"
       />
       <BarChart
         :data="productionGainValues.sort((a, b) => b.data - a.data)"
-        label="Ranking of wells by Production Gain"
+        label="Ranking of wells by Production Gain, bbl/day"
         x-axis-title="Production Gain"
       />
       <BarChart
         :data="abondonmentTimeYearsValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Time of Abandonment"
-        x-axis-title="Time of Abandonment, year"
+        x-axis-title="Time of Abandonment, years"
       />
       <div class="actions">
         <v-btn

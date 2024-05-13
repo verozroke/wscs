@@ -333,7 +333,7 @@ export const useInputStore = defineStore('InputStore', () => {
 
   const calculateEconomicDataResults = () => {
     economicDataResults.value = getEconomicDataResults({ ...getEconomicDataValues(), queriedWellName: queriedWellName.value })
-
+    console.log(economicDataResults.value)
     const queriedResultIndex = economicDataResultsGraphs.value.findIndex(item => item.wellName === queriedWellName.value)
 
     if (queriedResultIndex === -1) {
