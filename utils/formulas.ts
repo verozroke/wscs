@@ -274,13 +274,14 @@ const formulas = {
     totalCost: string
     deprecation: string
   }) {
-    return (parseFloat(args.totalRevenue) - parseFloat(args.totalCost) - parseFloat(args.deprecation)).toFixed(4).toString()
+    const unit = parseFloat(args.totalRevenue) - parseFloat(args.totalCost)
+    return (unit - (unit * (parseFloat(args.deprecation) / 100))).toFixed(4).toString()
   },
-  getNPV(args: { netCashFlow: string, i: string, n: string, abandonmentTime: string }): string {
-    let sum = 0
+  getNPV(args: { totalCost: string, netCashFlow: string, i: string, n: string }): string {
+    let sum = 0 - parseFloat(args.totalCost)
 
     for (let t = 1; t <= parseFloat(args.n); t++) {
-      sum += (parseFloat(args.netCashFlow) / parseFloat(args.abandonmentTime)) / Math.pow((1 + parseFloat(args.i)), parseFloat(args.n))
+      sum += (parseFloat(args.netCashFlow) / parseInt(args.n)) / Math.pow((1 + parseFloat(args.i)), t)
     }
 
     return sum.toFixed(4).toString()
@@ -292,13 +293,15 @@ const formulas = {
     EBIT: string
     royalty: string
   }) {
-    return (parseFloat(args.EBIT) - parseFloat(args.royalty)).toFixed(4).toString()
+    const unit = parseFloat(args.EBIT)
+    return (unit - (unit * (parseFloat(args.royalty) / 100))).toFixed(4).toString()
   },
   getNetIncome(args: {
     taxableIncome: string
     taxes: string
   }) {
-    return (parseFloat(args.taxableIncome) - parseFloat(args.taxes)).toFixed(4).toString()
+    const unit = parseFloat(args.taxableIncome)
+    return (unit - (unit * (parseFloat(args.taxes) / 100))).toFixed(4).toString()
   },
 }
 
@@ -495,14 +498,14 @@ export function getEconomicDataResults({ queriedWellName, costOfChemicals, opera
 
   const npv = formulas.getNPV({
     netCashFlow,
-    i: discountRate,
-    n: queriedTechnicalAnalysisResults.abondonmentTimeYears,
-    abandonmentTime: queriedWell.secondResults.abondonmentTime
+    totalCost,
+    i: (parseFloat(deprecation) / 100).toFixed(4).toString(),
+    n: Math.round(parseFloat(queriedTechnicalAnalysisResults.abondonmentTimeYears)).toString(),
   })
 
   const paybackPeriod = formulas.getPaybackPeriod({
     totalCost,
-    cashFlow: (parseFloat(netCashFlow) / parseFloat(queriedWell.secondResults.abondonmentTime)).toFixed(4).toString(),
+    cashFlow: (parseFloat(netCashFlow) / parseFloat(queriedTechnicalAnalysisResults.abondonmentTimeYears)).toFixed(4).toString(),
   })
 
 
