@@ -16,22 +16,22 @@
       <BarChart
         :data="totalRevenueValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Total Revenue"
-        x-axis-title="Total Revenue"
+        x-axis-title="Total Revenue, $"
       />
       <BarChart
         :data="netIncomeValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Net Income"
-        x-axis-title="Net Income"
+        x-axis-title="Net Income, $"
       />
       <BarChart
         :data="paybackPeriodValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Payback Period"
-        x-axis-title="Payback Period"
+        x-axis-title="Payback Period, days"
       />
       <BarChart
         :data="npvValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by NPV"
-        x-axis-title="NPV"
+        x-axis-title="NPV, $"
       />
       <div class="actions">
         <v-btn

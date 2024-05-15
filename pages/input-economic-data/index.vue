@@ -178,12 +178,14 @@
           class="input"
           label="Net present value of future cash flow"
           readonly
+          suffix="$"
           v-model="inputStore.economicDataResults.npv"
         ></v-text-field>
         <v-text-field
           variant="solo"
           class="input"
           label="Payback Period"
+          suffix="days"
           readonly
           v-model="inputStore.economicDataResults.paybackPeriod"
         ></v-text-field>
