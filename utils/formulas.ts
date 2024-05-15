@@ -280,7 +280,7 @@ const formulas = {
   getNPV(args: { totalCost: string, netCashFlow: string, i: string, n: string }): string {
     let sum = 0 - parseFloat(args.totalCost)
 
-    for (let t = 1; t < parseFloat(args.n); t++) {
+    for (let t = 1; t < parseInt(args.n); t++) {
       sum += (parseFloat(args.netCashFlow) / parseInt(args.n)) / Math.pow((1 + parseFloat(args.i)), t)
     }
 
