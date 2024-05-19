@@ -112,7 +112,7 @@
         <v-btn
           prepend-icon="mdi-arrow-left"
           color="purple-lighten-1"
-          @click="router.push('/complexity-factor-calculation')"
+          @click="router.push('/input-well-parameters/second')"
         >
           Back
         </v-btn>
@@ -140,17 +140,17 @@ const router = useRouter()
 const inputStore = useInputStore()
 
 
-const wellsWithEasy = computed(() => (
-  inputStore.wells
-    .filter(well => well.COFResults.COF < 50)
-    .map(well => ({ COF: well.COFResults.COF, wellName: well.wellName }))
-))
+// const wellsWithEasy = computed(() => (
+//   inputStore.wells
+//     .filter(well => well.COFResults.COF < 50)
+//     .map(well => ({ COF: well.COFResults.COF, wellName: well.wellName }))
+// ))
 
-const wellsWithDifficult = computed(() => (
-  inputStore.wells
-    .filter(well => well.COFResults.COF >= 50)
-    .map(well => ({ COF: well.COFResults.COF, wellName: well.wellName }))
-))
+// const wellsWithDifficult = computed(() => (
+//   inputStore.wells
+//     .filter(well => well.COFResults.COF >= 50)
+//     .map(well => ({ COF: well.COFResults.COF, wellName: well.wellName }))
+// ))
 
 onMounted(() => {
   inputStore.calculateTechnicalAnalysisResults()

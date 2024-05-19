@@ -65,10 +65,7 @@ const chartOptions = ref({
     x: {
       beginAtZero: true,
       min: 0,
-      max: (() => {
-        console.log(parseFloat(props.data[0].data.toFixed(2)) + 1)
-        return parseFloat(props.data[0].data.toFixed(2)) + 1
-      })(),
+      max: parseFloat(props.data[0].data.toFixed(2)) + 1,
       title: {
         display: true,
         text: props.xAxisTitle

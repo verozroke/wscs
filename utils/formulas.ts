@@ -499,7 +499,7 @@ export function getEconomicDataResults({ queriedWellName, costOfChemicals, opera
   const npv = formulas.getNPV({
     netCashFlow,
     totalCost,
-    i: (parseFloat(deprecation) / 100).toFixed(4).toString(),
+    i: (parseFloat(discountRate) / 100).toFixed(4).toString(),
     n: Math.round(parseFloat(queriedTechnicalAnalysisResults.abondonmentTimeYears)).toString(),
   })
 

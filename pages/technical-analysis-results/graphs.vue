@@ -13,6 +13,7 @@
       <v-app-bar-title>Technical Analysis Results</v-app-bar-title>
     </v-app-bar>
     <main class="body">
+      <!-- [{wellName: '', data: 1}, {wellName: '', data: 2}] -->
       <BarChart
         :data="cumulativeProductionValues.sort((a, b) => b.data - a.data)"
         label="Ranking of wells by Cumulative Production"
