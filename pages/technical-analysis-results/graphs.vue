@@ -40,7 +40,7 @@
         <v-btn
           append-icon="mdi-arrow-right"
           color="purple-lighten-1"
-          @click="router.push('/input-economic-data')"
+          @click="router.push('/hcl')"
         >
           Next
         </v-btn>

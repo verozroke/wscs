@@ -148,6 +148,187 @@ export type EconomicDataResultsReturnType = {
   paybackPeriod: string
 }
 
+
+export type HclResultsParam = {
+  hclType: 'Yes' | 'No'
+  k_md: string
+  mica: string
+  feldspars: string
+  kaolinite: string
+  mixedLayer: string
+  illite: string
+  smectite: string
+  chlorite: string
+  glauconite: string
+  zeolite: string
+}
+
+
+export type HclResultsReturnType = {
+  preflush: string
+  mainTreatment: string
+}
+
+
+function inRange(value: number, range: string) {
+  if (range.includes('-')) {
+    const [min, max] = range.split('-').map(Number);
+    return value >= min && value <= max;
+  } else if (range.includes('<')) {
+    return value < Number(range.slice(1));
+  } else if (range.includes('>')) {
+    return value > Number(range.slice(1));
+  }
+  return false;
+}
+
+
+function getPreflushFluid({
+  k, clay, slit, chloriteGlauconite, zeolite
+}: {
+  k: string
+  clay: string
+  slit: string
+  chloriteGlauconite: string
+  zeolite: string
+}) {
+  // Define the conditions as an array of objects
+  const conditions = [
+    { k: '>100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '15% HCl' },
+    { k: '>100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '10% HCl' },
+    { k: '>100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '10% HCl' },
+    { k: '>100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '10% HCl' },
+    { k: '20-100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '10% HCl' },
+    { k: '20-100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '7.5% HCl' },
+    { k: '20-100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '7.5% HCl' },
+    { k: '20-100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '7.5% HCl' },
+    { k: '<20', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '7.5% HCl' },
+    { k: '<20', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '5% HCl' },
+    { k: '<20', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '5% HCl' },
+    { k: '<20', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', preflush: '5% HCl' },
+    { k: '>100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '15% HCl + 5% acetic acid' },
+    { k: '>100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '10% HCl + 5% acetic acid' },
+    { k: '>100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '10% HCl + 5% acetic acid' },
+    { k: '>100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '10% HCl + 5% acetic acid' },
+    { k: '20-100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '10% HCl + 5% acetic acid' },
+    { k: '20-100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '7.5% HCl + 5% acetic acid' },
+    { k: '20-100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '7.5% HCl + 5% acetic acid' },
+    { k: '20-100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '7.5% HCl + 5% acetic acid' },
+    { k: '<20', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '7.5% HCl + 5% acetic acid' },
+    { k: '<20', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '5% HCl + 5% acetic acid' },
+    { k: '<20', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '5% HCl + 5% acetic acid' },
+    { k: '<20', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', preflush: '5% HCl + 5% acetic acid' },
+    { k: 'Any', clay: '<10', slit: 'Any', chloriteGlauconite: '3-6', zeolite: '0-2', preflush: '7.5% HCl + 5% acetic acid' },
+    { k: 'Any', clay: '>10', slit: 'Any', chloriteGlauconite: '3-6', zeolite: '0-2', preflush: '5% HCl + 5% acetic acid' },
+    { k: 'Any', clay: '<10', slit: 'Any', chloriteGlauconite: 'Any', zeolite: '>6', preflush: '10% acetic acid' },
+  ];
+
+  // Iterate through conditions and find the matching one
+  for (let condition of conditions) {
+    if (
+      (condition.k === 'Any' || inRange(parseFloat(k), condition.k)) &&
+      (condition.clay === 'Any' || inRange(parseFloat(clay), condition.clay)) &&
+      (condition.slit === 'Any' || inRange(parseFloat(slit), condition.slit)) &&
+      inRange(parseFloat(chloriteGlauconite), condition.chloriteGlauconite) &&
+      inRange(parseFloat(zeolite), condition.zeolite)
+    ) {
+      return condition.preflush;
+    }
+  }
+
+  return '0';
+}
+
+
+function getMainTreatmentFluid({
+  k, clay, slit, chloriteGlauconite, zeolite
+}: {
+  k: string
+  clay: string
+  slit: string
+  chloriteGlauconite: string
+  zeolite: string
+}) {
+  const conditions = [
+    { k: '>100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '12% HCl + 3% HF' },
+    { k: '>100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '13.5% HCl + 1.5% HF' },
+    { k: '>100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '12% HCl + 2% HF' },
+    { k: '>100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '12% HCl + 2% HF' },
+    { k: '20-100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '8% HCl + 2% HF' },
+    { k: '20-100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '9% HCl + 1% HF' },
+    { k: '20-100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '9% HCl + 1.5% HF' },
+    { k: '20-100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '9% HCl + 1.5% HF' },
+    { k: '<20', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '6% HCl + 1.5% HF' },
+    { k: '<20', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '4.5% HCl + 0.5% HF' },
+    { k: '<20', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '6% HCl + 1.5% HF' },
+    { k: '<20', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0', mainTreatment: '6% HCl + 1% HF' },
+    { k: '>100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '12% HCl + 3% HF + 5% acetic acid' },
+    { k: '>100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '13.5% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '>100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '12% HCl + 2% HF + 5% acetic acid' },
+    { k: '>100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '12% HCl + 2% HF + 5% acetic acid' },
+    { k: '20-100', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '8% HCl + 2% HF + 5% acetic acid' },
+    { k: '20-100', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '9% HCl + 1% HF + 5% acetic acid' },
+    { k: '20-100', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '9% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '20-100', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '9% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '<20', clay: '<10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '6% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '<20', clay: '>10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '4.5% HCl + 0.5% HF + 5% acetic acid' },
+    { k: '<20', clay: '>10', slit: '<10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '6% HCl + 1% HF + 5% acetic' },
+    { k: '<20', clay: '<10', slit: '>10', chloriteGlauconite: '<=3', zeolite: '0-2', mainTreatment: '6% HCl + 1% HF + 5% acetic' },
+    { k: '>20', clay: '<10', slit: '<10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '8% HCl + 2% HF + 5% acetic acid' },
+    { k: '>20', clay: '>10', slit: '>10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '9% HCl + 1% HF + 5% acetic acid' },
+    { k: '>20', clay: '>10', slit: '<10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '9% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '>20', clay: '<10', slit: '>10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '9% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '<=20', clay: '<10', slit: '<10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '6% HCl + 1.5% HF + 5% acetic acid' },
+    { k: '<=20', clay: '>10', slit: '>10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '4.5% HCl + 0.5% HF + 5% acetic acid' },
+    { k: '<=20', clay: '>10', slit: '<10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '6% HCl + 1% HF + 5% acetic acid' },
+    { k: '<=20', clay: '<10', slit: '>10', chloriteGlauconite: '3-6', zeolite: '0-2', mainTreatment: '6% HCl + 1% HF + 5% acetic acid' },
+    { k: '>20', clay: '<10', slit: '<10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '>20', clay: '>10', slit: '>10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '>20', clay: '>10', slit: '<10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '>20', clay: '<10', slit: '>10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '<=20', clay: '<10', slit: '<10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '<=20', clay: '>10', slit: '>10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '<=20', clay: '>10', slit: '<10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: '<=20', clay: '<10', slit: '>10', chloriteGlauconite: '>6', zeolite: '0-2', mainTreatment: 'Organic clay acid HT' },
+    { k: 'Any', clay: 'Any', slit: 'Any', chloriteGlauconite: 'Any', zeolite: '2-5', mainTreatment: 'Organic clay acid' },
+    { k: 'Any', clay: 'Any', slit: 'Any', chloriteGlauconite: 'Any', zeolite: '>5', mainTreatment: 'Organic clay acid HT' }
+  ];
+
+  function compare(value: number, condition: string) {
+    if (condition.includes('>=')) {
+      return value >= parseFloat(condition.replace('>=', '').trim());
+    } else if (condition.includes('>')) {
+      return value > parseFloat(condition.replace('>', '').trim());
+    } else if (condition.includes('<=')) {
+      return value <= parseFloat(condition.replace('<=', '').trim());
+    } else if (condition.includes('<')) {
+      return value < parseFloat(condition.replace('<', '').trim());
+    } else if (condition.includes('Any')) {
+      return true;
+    } else if (condition.includes('-')) {
+      const [min, max] = condition.split('-').map(Number);
+      return value >= min && value <= max;
+    } else {
+      return value == parseFloat(condition.trim());
+    }
+  }
+
+  for (const condition of conditions) {
+    if (
+      compare(parseFloat(k), condition.k) &&
+      compare(parseFloat(clay), condition.clay) &&
+      compare(parseFloat(slit), condition.slit) &&
+      compare(parseFloat(chloriteGlauconite), condition.chloriteGlauconite) &&
+      compare(parseFloat(zeolite), condition.zeolite)
+    ) {
+      return condition.mainTreatment;
+    }
+  }
+
+  return '0';
+}
+
+
 const formulas = {
   getQAS(args: { k: string, h: string, prMinusPwf: string, u: string, Bo: string, re: string, rw: string }): string {
     const upper = 0.00708 * parseFloat(args.k) * parseFloat(args.h) * parseFloat(args.prMinusPwf)
@@ -302,6 +483,60 @@ const formulas = {
   }) {
     const unit = parseFloat(args.taxableIncome)
     return (unit - (unit * (parseFloat(args.taxes) / 100))).toFixed(4).toString()
+  },
+
+  getHclYes(args: {
+    k: string
+    clay: string
+    slit: string
+    chloriteGlauconite: string
+    zeolite: string
+  }): HclResultsReturnType {
+
+    const preflush = getPreflushFluid(args)
+    const mainTreatment = getMainTreatmentFluid(args)
+
+    return {
+      preflush,
+      mainTreatment
+    }
+  },
+  getHclNo(args: {
+    k: string
+    clay: string
+    slit: string
+  }): HclResultsReturnType {
+
+    const conditions = [
+      { k: '>100', clay: '<10', slit: '<10', preflush: '15% HCl', mainTreatment: '12% HCl+3% HF' },
+      { k: '>100', clay: '>10', slit: '>10', preflush: '10% HCl', mainTreatment: '13.5% HCl+1.5% HF' },
+      { k: '>100', clay: '>10', slit: '<10', preflush: '10% HCl', mainTreatment: '12% HCl+2% HF' },
+      { k: '>100', clay: '<10', slit: '>10', preflush: '10% HCl', mainTreatment: '12% HCl+2% HF' },
+      { k: '20-100', clay: '<10', slit: '<10', preflush: '10% HCl', mainTreatment: '8% HCl+2% HF' },
+      { k: '20-100', clay: '>10', slit: '>10', preflush: '7.5% HCl', mainTreatment: '9% HCl+1% HF' },
+      { k: '20-100', clay: '>10', slit: '<10', preflush: '7.5% HCl', mainTreatment: '9% HCl+1.5% HF' },
+      { k: '20-100', clay: '<10', slit: '>10', preflush: '7.5% HCl', mainTreatment: '9% HCl+1.5% HF' },
+      { k: '<20', clay: '<10', slit: '<10', preflush: '7.5% HCl', mainTreatment: '6% HCl+1.5% HF' },
+      { k: '<20', clay: '>10', slit: '>10', preflush: '5% HCl', mainTreatment: '4.5% HCl+1% HF' },
+      { k: '<20', clay: '>10', slit: '<10', preflush: '5% HCl', mainTreatment: '6% HCl+1.5% HF' },
+      { k: '<20', clay: '<10', slit: '>10', preflush: '5% HCl', mainTreatment: '6% HCl+1% HF' },
+    ];
+
+    for (let condition of conditions) {
+      if (
+        inRange(parseFloat(args.k), condition.k) &&
+        inRange(parseFloat(args.clay), condition.clay) &&
+        inRange(parseFloat(args.slit), condition.slit)
+      ) {
+        return {
+          preflush: condition.preflush,
+          mainTreatment: condition.mainTreatment
+        };
+      }
+    }
+
+    return { preflush: '0', mainTreatment: '0' };
+
   },
 }
 
@@ -520,4 +755,35 @@ export function getEconomicDataResults({ queriedWellName, costOfChemicals, opera
     paybackPeriod
   }
 
+}
+
+
+export function getHclResults({ zeolite, chlorite, feldspars, glauconite, hclType, illite, k_md, kaolinite, mica, mixedLayer, smectite }: HclResultsParam): HclResultsReturnType {
+  const slit = (parseFloat(mica) + parseFloat(feldspars)).toFixed(4).toString()
+  const clay = (parseFloat(zeolite)
+    + parseFloat(kaolinite)
+    + parseFloat(mixedLayer)
+    + parseFloat(illite)
+    + parseFloat(smectite)
+    + parseFloat(chlorite)
+    + parseFloat(glauconite))
+    .toFixed(4)
+    .toString();
+
+  switch (hclType) {
+    case 'Yes':
+      return formulas.getHclYes({
+        chloriteGlauconite: (parseFloat(chlorite) + parseFloat(glauconite)).toFixed(4).toString(),
+        clay,
+        k: k_md,
+        slit,
+        zeolite,
+      })
+    case 'No':
+      return formulas.getHclNo({
+        k: k_md,
+        slit,
+        clay
+      })
+  }
 }

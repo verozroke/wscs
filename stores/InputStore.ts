@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getResultsAfterStimulation, getSecondResults, getCOFResults, getEconomicDataResults, type TechnicalAnalysisResultsReturnType } from '../utils/formulas'
+import { getResultsAfterStimulation, getSecondResults, getCOFResults, getEconomicDataResults, type TechnicalAnalysisResultsReturnType, getHclResults } from '../utils/formulas'
 import { useRouter } from 'vue-router'
 
 type Well = {
@@ -104,6 +104,18 @@ export const useInputStore = defineStore('InputStore', () => {
   const royalty = ref('')
   const queriedWellName = ref('')
 
+  const hclType = ref<'Yes' | 'No'>('No')
+  const k_md = ref('')
+  const mica = ref('')
+  const feldspars = ref('')
+  const kaolinite = ref('')
+  const mixedLayer = ref('')
+  const illite = ref('')
+  const smectite = ref('')
+  const chlorite = ref('')
+  const glauconite = ref('')
+  const zeolite = ref('')
+
   const wells = ref<Well[]>([])
 
   const economicDataResultsGraphs = ref<EconomicDataResultsItem[]>([])
@@ -146,6 +158,11 @@ export const useInputStore = defineStore('InputStore', () => {
     netCashFlow: '',
     npv: '',
     paybackPeriod: '',
+  })
+
+  const hclResults = ref({
+    preflush: '',
+    mainTreatment: ''
   })
 
   const getAfterStimulationValues = () => {
@@ -220,6 +237,23 @@ export const useInputStore = defineStore('InputStore', () => {
       discountRate: discountRate.value,
       taxes: taxes.value,
       royalty: royalty.value,
+    }
+  }
+
+
+  const getHclValues = () => {
+    return {
+      hclType: hclType.value,
+      k_md: k_md.value,
+      mica: mica.value,
+      feldspars: feldspars.value,
+      kaolinite: kaolinite.value,
+      mixedLayer: mixedLayer.value,
+      illite: illite.value,
+      smectite: smectite.value,
+      chlorite: chlorite.value,
+      glauconite: glauconite.value,
+      zeolite: zeolite.value,
     }
   }
 
@@ -313,6 +347,23 @@ export const useInputStore = defineStore('InputStore', () => {
     discountRate.value = ''
     taxes.value = ''
     royalty.value = ''
+
+    hclType.value = 'No'
+    k_md.value = ''
+    mica.value = ''
+    feldspars.value = ''
+    kaolinite.value = ''
+    mixedLayer.value = ''
+    illite.value = ''
+    smectite.value = ''
+    chlorite.value = ''
+    glauconite.value = ''
+    zeolite.value = ''
+
+    hclResults.value = {
+      mainTreatment: '',
+      preflush: '',
+    }
   }
 
   const calculateTechnicalAnalysisResults = () => {
@@ -329,6 +380,10 @@ export const useInputStore = defineStore('InputStore', () => {
 
   const calculateComplexityFactor = () => {
     COFResults.value = getCOFResults(getCOFValues())
+  }
+
+  const calculateHclResults = () => {
+    hclResults.value = getHclResults(getHclValues())
   }
 
   const calculateEconomicDataResults = () => {
@@ -404,6 +459,20 @@ export const useInputStore = defineStore('InputStore', () => {
     calculateEconomicDataResults,
     economicDataResults,
     economicDataResultsGraphs,
+
+    hclType,
+    k_md,
+    mica,
+    feldspars,
+    kaolinite,
+    mixedLayer,
+    illite,
+    smectite,
+    chlorite,
+    glauconite,
+    zeolite,
+    hclResults,
+    calculateHclResults
   }
 }, {
   persist: {

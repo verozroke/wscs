@@ -195,7 +195,7 @@
         <v-btn
           prepend-icon="mdi-arrow-left"
           color="purple-lighten-1"
-          @click="router.push('/technical-analysis-results/graphs')"
+          @click="router.push('/hcl/recommendations')"
         >
           Back
         </v-btn>
