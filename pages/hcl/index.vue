@@ -153,39 +153,34 @@
       <div v-if="isCalClicked">
         <h1>Treatment Design</h1>
 
-        <h2>1. Tubing Pickling/Wellbore Cleanup</h2>
+        <h3>1. Tubing Pickling/Wellbore Cleanup</h3>
         <p>7.5% HCl + iron control agent + corrosion inhibitor</p>
 
-        <h2>2. Preflush</h2>
+        <h3>2. Preflush</h3>
 
-        <h3>2.1. Non-acid</h3>
+        <h4>2.1. Non-acid</h4>
         <p> {{ nonAcidConcentration }}% NH4Cl 40-80 gal/ft. </p>
 
-        <h3>2.2. Acid</h3>
+        <h4>2.2. Acid</h4>
         <p>{{ inputStore.hclResults.preflush }} 50-100 gal/ft.</p>
 
-        <h2>3. Main Flush</h2>
+        <h3>3. Main Flush</h3>
         <p>{{ inputStore.hclResults.mainTreatment }} 10-250 gal/ft.</p>
 
-        <h2>4. Overflush</h2>
+        <h3>4. Overflush</h3>
         <p>{{ inputStore.hclResults.preflush }} 25-100 gal/ft.</p>
 
-        <h2>Recommendations</h2>
+        <h3>Recommendations</h3>
+        <p>1. If iron and carbonate contents are high, add ammonium chloride for clay stability to Acid Preflush fluid.
+        </p>
+        <p>2. The well shut-in time after treatment should be minimized to reduce precipitation of reaction product.</p>
 
-        <h3>1.</h3>
-        <p>If iron and carbonate contents are high, add ammonium chloride for clay stability to Acid Preflush fluid.</p>
+        <p>3. Wells with low bottom hole static pressure (BHSP) should be treated with energized/foamed fluids.</p>
 
-        <h3>2.</h3>
-        <p>The well shut-in time after treatment should be minimized to reduce precipitation of reaction product.</p>
+        <p>4. Sludge or emulsion tendency of crude will dictate the use of a specific acid system.</p>
 
-        <h3>3.</h3>
-        <p>Wells with low bottom hole static pressure (BHSP) should be treated with energized/foamed fluids.</p>
-
-        <h3>4.</h3>
-        <p>Sludge or emulsion tendency of crude will dictate the use of a specific acid system.</p>
-
-        <h3>5.</h3>
-        <p>The afterflush should occur immediately after the main acid injection to minimize precipitation of Si (OH)4.
+        <p>5.The afterflush should occur immediately after the main acid injection to minimize precipitation of Si
+          (OH)4.
         </p>
       </div>
       <div class="actions">
