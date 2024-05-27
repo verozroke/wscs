@@ -10,7 +10,7 @@
           @click="router.push('/')"
         ></v-btn>
       </template>
-      <v-app-bar-title>Recipe</v-app-bar-title>
+      <v-app-bar-title>Treatment Design</v-app-bar-title>
     </v-app-bar>
     <main class="body">
       <div class="row">
@@ -121,23 +121,12 @@
           v-model="inputStore.zeolite"
         ></v-text-field>
       </div>
-
       <v-btn
-        v-if="!isCalClicked"
         @click="() => {
         inputStore.calculateHclResults()
         isCalClicked = true
       }"
-        color="green"
-        style="width: 350px; margin: 10px;"
-        prepend-icon="mdi-calculator"
-      >
-        Calculate
-      </v-btn>
-      <v-btn
-        @click="router.push('/hcl/recommendations')"
         color="teal-accent-4"
-        v-if="isCalClicked"
         style="width: 350px; margin: 10px;"
         prepend-icon="mdi-arrow-right"
       >
@@ -160,8 +149,44 @@
           readonly
           v-model="inputStore.hclResults.mainTreatment"
         ></v-text-field>
+      </div>
+      <div v-if="isCalClicked">
+        <h1>Treatment Design</h1>
 
+        <h2>1. Tubing Pickling/Wellbore Cleanup</h2>
+        <p>7.5% HCl + iron control agent + corrosion inhibitor</p>
 
+        <h2>2. Preflush</h2>
+
+        <h3>2.1. Non-acid</h3>
+        <p> {{ nonAcidConcentration }}% NH4Cl 40-80 gal/ft. </p>
+
+        <h3>2.2. Acid</h3>
+        <p>{{ inputStore.hclResults.preflush }} 50-100 gal/ft.</p>
+
+        <h2>3. Main Flush</h2>
+        <p>{{ inputStore.hclResults.mainTreatment }} 10-250 gal/ft.</p>
+
+        <h2>4. Overflush</h2>
+        <p>{{ inputStore.hclResults.preflush }} 25-100 gal/ft.</p>
+
+        <h2>Recommendations</h2>
+
+        <h3>1.</h3>
+        <p>If iron and carbonate contents are high, add ammonium chloride for clay stability to Acid Preflush fluid.</p>
+
+        <h3>2.</h3>
+        <p>The well shut-in time after treatment should be minimized to reduce precipitation of reaction product.</p>
+
+        <h3>3.</h3>
+        <p>Wells with low bottom hole static pressure (BHSP) should be treated with energized/foamed fluids.</p>
+
+        <h3>4.</h3>
+        <p>Sludge or emulsion tendency of crude will dictate the use of a specific acid system.</p>
+
+        <h3>5.</h3>
+        <p>The afterflush should occur immediately after the main acid injection to minimize precipitation of Si (OH)4.
+        </p>
       </div>
       <div class="actions">
         <v-btn
@@ -174,7 +199,7 @@
         <v-btn
           append-icon="mdi-arrow-right"
           color="purple-lighten-1"
-          @click="router.push('/hcl/recommendations')"
+          @click="router.push('/input-economic-data')"
         >
           Next
         </v-btn>
@@ -196,6 +221,7 @@ const router = useRouter()
 const inputStore = useInputStore()
 
 const isCalClicked = ref(false)
+const nonAcidConcentration = computed(() => 3 + (parseFloat(inputStore.smectite) * 0.3 + parseFloat(inputStore.illite) * 0.12 + parseFloat(inputStore.kaolinite) * 0.08 + parseFloat(inputStore.chlorite) * 0.12 + parseFloat(inputStore.feldspars) * 0.05))
 
 
 </script>
