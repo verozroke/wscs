@@ -132,24 +132,6 @@
       >
         Results
       </v-btn>
-      <div class="row">
-
-        <v-text-field
-          variant="solo"
-          class="input"
-          label="Preflush/Overflush fluid"
-          readonly
-          v-model="inputStore.hclResults.preflush"
-        ></v-text-field>
-
-        <v-text-field
-          variant="solo"
-          class="input"
-          label="Main Treatment Fluid"
-          readonly
-          v-model="inputStore.hclResults.mainTreatment"
-        ></v-text-field>
-      </div>
       <div v-if="isCalClicked">
         <h1>Treatment Design</h1>
 
